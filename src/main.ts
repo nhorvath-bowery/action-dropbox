@@ -6,13 +6,22 @@ import globby from 'globby'
 import { DropboxUploader } from './upload/dropbox/DropboxUploader'
 import { getInputs } from './utils/getInputs'
 
-const { accessToken, file, destination, pattern, displayProgress = false, partSizeBytes = 1024 } = getInputs({
+const {
+  accessToken,
+  file,
+  destination,
+  pattern,
+  displayProgress = false,
+  partSizeBytes = 1024,
+  workingDirectory = '.',
+} = getInputs({
   accessToken: 'string',
   pattern: 'string?',
   file: 'string?',
   destination: 'string',
   displayProgress: 'boolean?',
   partSizeBytes: 'number?',
+  workingDirectory: 'string?',
 })
 
 async function run() {
@@ -33,6 +42,17 @@ async function run() {
   core.info(`destination ${destination}`)
   core.info(`displayProgress ${displayProgress ? 'true' : 'false'}`)
   core.info(`partSizeBytes ${partSizeBytes}`)
+  core.info(`workingDirectory ${workingDirectory}`)
+  core.endGroup()
+
+  core.startGroup('working directory')
+  core.info('Starting directory: ' + process.cwd())
+  try {
+    process.chdir(workingDirectory)
+    core.info('New directory: ' + process.cwd())
+  } catch (err) {
+    core.error('chdir: ' + err)
+  }
   core.endGroup()
 
   if (pattern) {
