@@ -44,13 +44,14 @@ const core = __importStar(__webpack_require__(2186));
 const globby_1 = __importDefault(__webpack_require__(3398));
 const DropboxUploader_1 = __webpack_require__(1574);
 const getInputs_1 = __webpack_require__(515);
-const { accessToken, file, destination, pattern, displayProgress = false, partSizeBytes = 1024 } = getInputs_1.getInputs({
+const { accessToken, file, destination, pattern, displayProgress = false, partSizeBytes = 1024, workingDirectory = '.', } = getInputs_1.getInputs({
     accessToken: 'string',
     pattern: 'string?',
     file: 'string?',
     destination: 'string',
     displayProgress: 'boolean?',
     partSizeBytes: 'number?',
+    workingDirectory: 'string?',
 });
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -70,6 +71,17 @@ function run() {
         core.info(`destination ${destination}`);
         core.info(`displayProgress ${displayProgress ? 'true' : 'false'}`);
         core.info(`partSizeBytes ${partSizeBytes}`);
+        core.info(`workingDirectory ${workingDirectory}`);
+        core.endGroup();
+        core.startGroup('working directory');
+        core.info('Starting directory: ' + process.cwd());
+        try {
+            process.chdir(workingDirectory);
+            core.info('New directory: ' + process.cwd());
+        }
+        catch (err) {
+            core.error('chdir: ' + err);
+        }
         core.endGroup();
         if (pattern) {
             yield core.group(`uploading batch ${pattern}`, () => __awaiter(this, void 0, void 0, function* () {
