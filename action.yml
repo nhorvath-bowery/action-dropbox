@@ -23,6 +23,9 @@ inputs:
   displayProgress:
     required: false
     description: "Display file uploading progress logs. default: false"
+  workingDirectory:
+    required: false
+    description: "Change to the specified directory before executing. default: ."
 outputs:
   files:
     description: "List of files uploaded to Dropbox"
